@@ -8,16 +8,44 @@ CREATE TABLE estado (
 	PRIMARY KEY (estado)	
 );
 
+insert into estado(estado, descripcion)
+values (0, 'Creado');
+
+insert into estado(estado, descripcion)
+values(1, 'Inicializado');
+
+insert into estado(estado, descripcion)
+values(2, 'Finalizado');
 
 CREATE TABLE juego(
-    juego int,
-    jugador1 int, 
-    posicion_jugador1 int,
-    jugador2 int, 
-    posicion_jugador2 int,
+    juego varchar(200),
     estado int,
     created_at timestamp,
     PRIMARY KEY (juego),
     FOREIGN KEY (estado) REFERENCES estado(estado)
+);
+
+
+CREATE TABLE posicion(
+    jugador varchar(200),
+    posicion int,
+    juego varchar(200),
+    FOREIGN KEY (juego) REFERENCES juego(juego)
+
+);
+
+CREATE TABLE turno(
+    jugador varchar(200),
+    turno boolean,
+    juego varchar(200),
+    FOREIGN KEY (juego) REFERENCES juego(juego)
+);
+
+CREATE TABLE bitacora_juego(
+	id int NOT NULL AUTO_INCREMENT, 
+	nombre_microservicio varchar(50),
+	accion varchar(50),
+	created_at timestamp, 
+    PRIMARY KEY (id)	
 );
 
