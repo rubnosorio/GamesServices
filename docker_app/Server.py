@@ -63,8 +63,8 @@ def juegos() -> List[Dict]:
         data = {}
         data['juego'] = str(row[0])
         data['estado'] = str(row[1])
-        data['created_at'] = str(row[1])
-        data['jugador'] = str(row[2])
+        data['created_at'] = str(row[2])
+        data['jugador'] = str(row[3])
         json_data_list.append(data)
     # se cierra el cursor
     cursor.close()
