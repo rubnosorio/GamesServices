@@ -2,10 +2,15 @@ import os
 #se cargan variables globales
 from dotenv import load_dotenv
 load_dotenv()
+
+#token
+from functools import wraps
+# import para hacer solicitudes
+import requests
 # import del manejo de listas
 from typing import List, Dict
 # import para el funcionamiento general de flask
-from flask import Flask
+from flask import Flask, jsonify
 from flask import request
 from flask import Response
 # import libreria json
@@ -28,6 +33,20 @@ config = {
     'port': '3306',
     'database': 'juegos'
 }
+
+def check_for_token(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        token = request.args.get('token')
+        if not token:
+            return jsonify({'Mensaje':'Falta el token'}), 403
+        try:
+            data = jwt.decode(token, os.getenv("SECRET_KEY"))
+        except:
+            return jsonify({'Mensaje':'Token Invalido'}), 403
+        return func(*args, **kwargs)
+    return wrapped
+    
 
 def juegos() -> List[Dict]:
     # variable de la conexion con la base de datos
@@ -60,45 +79,60 @@ def simularPartida(idJuego, jugadores):
 #se insertar un nuevo registro en la tabla juego
 #se inicializan las posiciones y el marcador de los jugadores.
 def generarNuevaPartida(idjuego, jugadores):
-    today = date.today()
-     # variable de la conexion con la base de datos
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    #query insert hacia juego
-    sql_query = """INSERT INTO juego (juego, estado, created_at)
-                   VALUES (%(id_juego)s, %(estado)s, %(created)s)"""
-    # ejecucion de consulta hacia la base de datos  
-    cursor.execute(sql_query, {'id_juego': idjuego,  'estado': 0, 'created':  today})
-    #query insert hacia posicion
-    connection.commit()
-    sql_query = """INSERT INTO posicion (jugador, posicion, juego)
-                   VALUES (%(jugador)s, %(posicion)s, %(id_juego)s)"""
-    cursor.execute(sql_query, {'jugador': str(jugadores[0]), 'posicion': 0, 'id_juego': idjuego})
-    # creacion de objeto donde se almacenara el contenido de la tabla
-    connection.commit()
-    #se inserta jugador2
-    sql_query = """INSERT INTO posicion (jugador, posicion, juego)
-                   VALUES (%(jugador)s, %(posicion)s, %(id_juego)s)"""
-    cursor.execute(sql_query, {'jugador': str(jugadores[1]), 'posicion': 0, 'id_juego': idjuego})
-    # creacion de objeto donde se almacenara el contenido de la tabla
-    connection.commit()
-    #se inserta turno jugador 1, inicia partida
-    sql_query = """INSERT INTO turno (jugador, turno, juego)
-                   VALUES (%(jugador)s, %(turno)s, %(id_juego)s)"""
-    cursor.execute(sql_query, {'jugador': str(jugadores[0]), 'turno': True, 'id_juego': idjuego})
-    # creacion de objeto donde se almacenara el contenido de la tabla
-    connection.commit()
-    #se inserta turno jugador 1, inicia partida
-    sql_query = """INSERT INTO turno (jugador, turno, juego)
-                   VALUES (%(jugador)s, %(turno)s, %(id_juego)s)"""
-    cursor.execute(sql_query, {'jugador': str(jugadores[1]), 'turno': False, 'id_juego': idjuego})
-    # creacion de objeto donde se almacenara el contenido de la tabla
-    connection.commit()
-    cursor.close()
-    # se cierra tambien con la conexion hacia la BD
-    connection.close()
-    # retorno del objeto con el contenido de la tabla
-    return "1"
+    try:
+        #verificar si existen los jugadores
+        #verificar jugador 1
+        url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
+        r1 = requests.get(url = os.getenv("USERS_ENDPOINT")) 
+        #verificar jugador2
+
+        url = os.getenv("USERS_ENDPOINT") + str(jugadores[1])
+        r2 = requests.get(url = os.getenv("USERS_ENDPOINT"))
+        if r1.status_code != 200 or r2.status_code != 200:
+            return Response("{'Respuesta':'Usuario no encontrado'", status=404,  mimetype='application/json')
+        # obtener la fecha de hoy
+        today = date.today()
+        # variable de la conexion con la base de datos
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        #query insert hacia juego
+        sql_query = """INSERT INTO juego (juego, estado, created_at)
+                    VALUES (%(id_juego)s, %(estado)s, %(created)s)"""
+        # ejecucion de consulta hacia la base de datos  
+        cursor.execute(sql_query, {'id_juego': idjuego,  'estado': 0, 'created':  today})
+        #query insert hacia posicion
+        connection.commit()
+        sql_query = """INSERT INTO posicion (jugador, posicion, juego)
+                    VALUES (%(jugador)s, %(posicion)s, %(id_juego)s)"""
+        cursor.execute(sql_query, {'jugador': str(jugadores[0]), 'posicion': 0, 'id_juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        #se inserta jugador2
+        sql_query = """INSERT INTO posicion (jugador, posicion, juego)
+                    VALUES (%(jugador)s, %(posicion)s, %(id_juego)s)"""
+        cursor.execute(sql_query, {'jugador': str(jugadores[1]), 'posicion': 0, 'id_juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        #se inserta turno jugador 1, inicia partida
+        sql_query = """INSERT INTO turno (jugador, turno, juego)
+                    VALUES (%(jugador)s, %(turno)s, %(id_juego)s)"""
+        cursor.execute(sql_query, {'jugador': str(jugadores[0]), 'turno': True, 'id_juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        #se inserta turno jugador 1, inicia partida
+        sql_query = """INSERT INTO turno (jugador, turno, juego)
+                    VALUES (%(jugador)s, %(turno)s, %(id_juego)s)"""
+        cursor.execute(sql_query, {'jugador': str(jugadores[1]), 'turno': False, 'id_juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        cursor.close()
+        # se cierra tambien con la conexion hacia la BD
+        connection.close()
+        # retorno del objeto con el contenido de la tabla
+        return Response(success_message, status=201,  mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(error_message, status=406,  mimetype='application/json')
 
 def cambiarPosicionJugador(idjuego, idjugador, nuevaPosicion):
     try:
@@ -223,6 +257,7 @@ def cambiarTurno(idjuego, idjugador):
 
 # Funcion que permite iniciar un nuevo juego creado desde un torneo
 @app.route('/generar', methods=['POST'])
+@check_for_token
 def generar():
     inputs = request.get_json(force=True)
     idjuego = inputs['id']
@@ -231,6 +266,7 @@ def generar():
     return valor
 
 @app.route('/simular', methods=['POST'])
+@check_for_token
 def simular():
     inputs = request.get_json(force=true)
     idjuego = inputs['id']

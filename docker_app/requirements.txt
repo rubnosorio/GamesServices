@@ -1,4 +1,5 @@
 Flask
 mysql-connector
 python-dotenv
+requests
 uWSGI==2.0.17.1
