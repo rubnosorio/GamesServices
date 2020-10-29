@@ -257,7 +257,7 @@ def cambiarTurno(idjuego, idjugador):
 
 # Funcion que permite iniciar un nuevo juego creado desde un torneo
 @app.route('/generar', methods=['POST'])
-@check_for_token
+#@check_for_token
 def generar():
     inputs = request.get_json(force=True)
     idjuego = inputs['id']
@@ -266,7 +266,7 @@ def generar():
     return valor
 
 @app.route('/simular', methods=['POST'])
-@check_for_token
+#@check_for_token
 def simular():
     inputs = request.get_json(force=true)
     idjuego = inputs['id']
@@ -280,7 +280,7 @@ def obtenerJuegos():
 
 @app.route('/obtenerEnv', methods=['GET'])
 def obtenerEnv():
-    valor = os.getenv("EMAIL")
+    valor = os.getenv("SECRET_KEY")
     return valor 
 
 
