@@ -81,6 +81,7 @@ def simularPartida(idJuego, jugadores):
 def generarNuevaPartida(idjuego, jugadores):
     #verificar si existen los jugadores
     #verificar jugador 1
+    '''
     url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
     r1 = requests.get(url = os.getenv("USERS_ENDPOINT")) 
     #verificar jugador2
@@ -88,7 +89,7 @@ def generarNuevaPartida(idjuego, jugadores):
     url = os.getenv("USERS_ENDPOINT") + str(jugadores[1])
     r2 = requests.get(url = os.getenv("USERS_ENDPOINT"))
     if r1.status_code != 200 or r2.status_code != 200:
-        return Response("{'Respuesta':'Usuario no encontrado'}", status=404,  mimetype='application/json')
+        return Response("{'Respuesta':'Usuario no encontrado'}", status=404,  mimetype='application/json')'''
     try:
 
         # obtener la fecha de hoy
