@@ -1,3 +1,4 @@
+import os
 #se cargan variables globales
 from dotenv import load_dotenv
 load_dotenv()
@@ -6,6 +7,7 @@ from typing import List, Dict
 # import para el funcionamiento general de flask
 from flask import Flask
 from flask import request
+from flask import Response
 # import libreria json
 import json  
 # import de conexion con mysql
@@ -15,7 +17,8 @@ import random
 #import para obtener fecha y hora
 from datetime import date
 
-
+error_message = "{'respuesta':'Error'}"
+success_message = "{'respuesta': 'Success'}"
 app = Flask(__name__)  # creacion de la app en python de flask
 #configuracion global de base de datos
 config = {
@@ -98,21 +101,24 @@ def generarNuevaPartida(idjuego, jugadores):
     return "1"
 
 def cambiarPosicionJugador(idjuego, idjugador, nuevaPosicion):
-    today = date.today()
-     # variable de la conexion con la base de datos
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    #consulta hacia que se utilizara en base de datos
-    sql_query = """UPDATE posicion SET posicion = %(posicion)s WHERE jugador = %(jugador)s and juego = %(juego)s"""
-    # ejecucion de consulta hacia la base de datos  
-    cursor.execute(sql_query, {'posicion': nuevaPosicion, 'jugador': idjugador, 'juego': idjuego})
-    # creacion de objeto donde se almacenara el contenido de la tabla
-    connection.commit()
-    cursor.close()
-    # se cierra tambien con la conexion hacia la BD
-    connection.close()
-    # retorno del objeto con el contenido de la tabla
-    return "1"
+    try:
+        today = date.today()
+        # variable de la conexion con la base de datos
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        #consulta hacia que se utilizara en base de datos
+        sql_query = """UPDATE posicion SET posicion = %(posicion)s WHERE jugador = %(jugador)s and juego = %(juego)s"""
+        # ejecucion de consulta hacia la base de datos  
+        cursor.execute(sql_query, {'posicion': nuevaPosicion, 'jugador': idjugador, 'juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        cursor.close()
+        # se cierra tambien con la conexion hacia la BD
+        connection.close()
+        return Response(success_message, status=201, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(error_message, status=500,  mimetype='application/json')
 
 
 def obtenerPosicionJugadores(idjuego):
@@ -139,7 +145,55 @@ def obtenerPosicionJugadores(idjuego):
     json_data = json.dumps(json_data_list)
     return json_data
 
+def obtenerTurnoJuego(idjuego):
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        #consulta hacia que se utilizara en base de datos
+        sql_query = "SELECT jugador, turno FROM turno WHERE juego = %(juego)s"
+        # ejecucion de consulta hacia la base de datos  
+        cursor.execute(sql_query, {'juego': idjuego})
+        results =  cursor.fetchall()    
+        json_data_list = []
+        for row in results:
+            data = {}
+            data['jugador'] = str(row[0])
+            data['turno'] = str(row[1])
+            json_data_list.append(data)
+        json_data = json.dumps(json_data_list)
+        # se cierra el cursor
+        cursor.close()
+        # se cierra tambien con la conexion hacia la BD
+        connection.close()
+        return Response(json_data, status=201, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(error_message, status=500, mimetype='application/json')
+    
 
+def cambiarTurnoJugador(idjuego, jugador):
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        #consulta hacia que se utilizara en base de datos
+        sql_query = "UPDATE turno set turno = 0  WHERE juego = %(juego)s and jugador = %(jugador)s"
+        sql_query_update = "UPDATE turno set turno = 1  WHERE juego = %(juego)s and jugador <> %(jugador)s"
+        # ejecucion de consulta hacia la base de datos  
+        cursor.execute(sql_query, {'juego': idjuego, 'jugador': jugador})
+        connection.commit()
+        cursor.execute(sql_query_update, {'juego': idjuego, 'jugador': jugador})
+        connection.commit()
+        # se cierra el cursor
+        cursor.close()
+        # se cierra tambien con la conexion hacia la BD
+        connection.close()
+        return Response("{'respuesta':'turno cambiado'}", status=201, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response("{'respuesta':'Error'}", status=500, mimetype='application/json')
+
+
+    # se guarda la transaccion
 # funcion raiz obtener la posicion de los jugadores dentro de un 
 # determinado juego
 @app.route('/obtenerPosicion/<idjuego>', methods=['GET'])
@@ -148,23 +202,24 @@ def obtenerPosicion(idjuego):
     posiciones = obtenerPosicionJugadores(idjuego)
     return posiciones
 
-'''
-@app.route('/guardarPosicion/<idjuego>', methods=['GET'])
-def guardarPosicion(idjuego, idjugador):
+
+@app.route('/guardarPosicion/<idjuego>/<idjugador>/<posicion>', methods=['POST'])
+def guardarPosicion(idjuego, idjugador, posicion):
     #se obtiene el id del juego
-    #posiciones = cambiarPosicionJugador(idjuego)
-    return json.dumps()
-'''
+    cambiarPosicionJugador(idjuego, idjugador, posicion)
+    return Response("{'respuesta': 'Posicion Cambiada'}", status=201, mimetype='application/json')
+
 # funcion que permite obtener el turno de un jugador en
 # determinado juego
 @app.route('/obtenerTurno/<idjuego>', methods=['GET'])
 def obtenerTurno(idjuego):
     #variable de la conexion con la base de datos
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    #consulta hacia que se utilizara en base de datos
-    sql_query = "SELECT * FROM turno WHERE juego = %(id_juego)s"
-    return 1
+    respuesta = obtenerTurnoJuego(idjuego)
+    
+
+@app.route('/cambiarTurno/<idjuego>/<idjugador>', methods=['POST'])
+def cambiarTurno(idjuego, idjugador):
+    return cambiarTurnoJugador(idjuego, idjugador)
 
 # Funcion que permite iniciar un nuevo juego creado desde un torneo
 @app.route('/generar', methods=['POST'])
@@ -186,6 +241,11 @@ def simular():
 @app.route('/obtenerJuegos', methods=['GET'])
 def obtenerJuegos():
     return juegos()
+
+@app.route('/obtenerEnv', methods=['GET'])
+def obtenerEnv():
+    valor = os.getenv("EMAIL")
+    return valor 
 
 
 if __name__ == '__main__':
