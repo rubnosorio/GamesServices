@@ -79,17 +79,18 @@ def simularPartida(idJuego, jugadores):
 #se insertar un nuevo registro en la tabla juego
 #se inicializan las posiciones y el marcador de los jugadores.
 def generarNuevaPartida(idjuego, jugadores):
-    try:
-        #verificar si existen los jugadores
-        #verificar jugador 1
-        url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
-        r1 = requests.get(url = os.getenv("USERS_ENDPOINT")) 
-        #verificar jugador2
+    #verificar si existen los jugadores
+    #verificar jugador 1
+    url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
+    r1 = requests.get(url = os.getenv("USERS_ENDPOINT")) 
+    #verificar jugador2
 
-        url = os.getenv("USERS_ENDPOINT") + str(jugadores[1])
-        r2 = requests.get(url = os.getenv("USERS_ENDPOINT"))
-        if r1.status_code != 200 or r2.status_code != 200:
-            return Response("{'Respuesta':'Usuario no encontrado'", status=404,  mimetype='application/json')
+    url = os.getenv("USERS_ENDPOINT") + str(jugadores[1])
+    r2 = requests.get(url = os.getenv("USERS_ENDPOINT"))
+    if r1.status_code != 200 or r2.status_code != 200:
+        return Response("{'Respuesta':'Usuario no encontrado'}", status=404,  mimetype='application/json')
+    try:
+
         # obtener la fecha de hoy
         today = date.today()
         # variable de la conexion con la base de datos
