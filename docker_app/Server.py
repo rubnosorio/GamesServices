@@ -251,7 +251,8 @@ def guardarPosicion(idjuego, idjugador, posicion):
 @app.route('/obtenerTurno/<idjuego>', methods=['GET'])
 def obtenerTurno(idjuego):
     #variable de la conexion con la base de datos
-    respuesta = obtenerTurnoJuego(idjuego)
+    return obtenerTurnoJuego(idjuego)
+    
     
 
 @app.route('/cambiarTurno/<idjuego>/<idjugador>', methods=['POST'])
