@@ -53,24 +53,25 @@ def juegos() -> List[Dict]:
     connection = mysql.connector.connect(**config)
     cursor = connection.cursor()
     # ejecucion de consulta hacia la base de datos
-    cursor.execute('SELECT * FROM juego')
+    cursor.execute('''SELECT j.juego, j.estado, j.created_at, p.jugador FROM juego j
+                    INNER JOIN posicion p
+                        ON p.juego = j.juego''')
     # creacion de objeto donde se almacenara el contenido de la tabla
     results =  cursor.fetchall()
-    data = ''
+    json_data_list = []
     for row in results:
-      data += "juego = " +  str(row[0]) 
-      data += "jugador1 = " + str(row[1])
-      data += "posicion_jugador1  = " + str(row[2])
-      data += "jugador2 = " + str(row[3])
-      data += "posicion_jugador2 = " + str(row[4])
-      data += "estado = " + str(row[5])
-      data += "created_at = " + str(row[6]) +  "\n"
+        data = {}
+        data['juego'] = str(row[0])
+        data['estado'] = str(row[1])
+        data['created_at'] = str(row[1])
+        data['jugador'] = str(row[2])
+        json_data_list.append(data)
     # se cierra el cursor
     cursor.close()
     # se cierra tambien con la conexion hacia la BD
     connection.close()
     # retorno del objeto con el contenido de la tabla
-    return data
+    return json.dumps(json_data_list)
 
 
 def simularPartida(idJuego, jugadores):
