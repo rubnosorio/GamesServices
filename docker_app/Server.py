@@ -121,7 +121,7 @@ def tirarDado():
         else:
             operacion = abs(dado1 - dado2)
         return operacion
-    catch Exception as e:
+    except Exception as e:
         print(e)
         return 0
 
