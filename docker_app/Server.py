@@ -315,7 +315,7 @@ def obtenerEnv():
 
 @app.route('/ganador/<idjuego>', methods=['POST'])
 def obtenerGanador(idjuego):
-    inputs = request.get_json(force=true)
+    inputs = request.get_json(force=True)
     marcador = inputs['marcador']
     data = {}
     json_data_list = []
