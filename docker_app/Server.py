@@ -300,7 +300,7 @@ def finalizarPartida(idjuego):
 @app.route('/simular', methods=['POST'])
 #@check_for_token
 def simular():
-    inputs = request.get_json(force=true)
+    inputs = request.get_json(force=True)
     idjuego = inputs['id']
     jugadores = inputs['jugadores']
     valor = simularPartida(idjuego, jugadores)
@@ -315,16 +315,10 @@ def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
 
-@app.route('/ganador/<idjuego>', methods=['POST'])
-def obtenerGanador(idjuego):
-    inputs = request.get_json(force=True)
-    marcador = inputs['marcador']
-    data = {}
-    json_data_list = []
-    data['marcador'] = marcador
-    json_data_list.append(data)
+@app.route('/ganador/<idjuego>/<cadena>', methods=['POST'])
+def obtenerGanador(idjuego, cadena):
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
-    r1 = requests.put(url = urls, data=json_data_list) 
+    r1 = requests.put(url = urls, data=cadena) 
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
