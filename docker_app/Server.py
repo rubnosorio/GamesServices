@@ -122,7 +122,7 @@ def tirarDado():
             operacion = abs(dado1 - dado2)
         return operacion
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return 0
 
 
