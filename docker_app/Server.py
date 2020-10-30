@@ -129,8 +129,6 @@ def tirarDado():
 
 def simularPartida(idjuego, jugadores):
     try:
-        connection = mysql.connector.connect(**config)
-        cursor = connection.cursor()
         pos_jugador1 = 0
         pos_jugador2 = 0    
         generarNuevaPartida(idjuego, jugadores)
@@ -139,19 +137,19 @@ def simularPartida(idjuego, jugadores):
             dado = tirarDado()
             pos_jugador1 += dado
            # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
-           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION' + str(pos_jugador1))
+           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION ' + str(pos_jugador1))
             #turno jugador2
             dado = tirarDado ()
             pos_jugador2 += dado
             #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
-            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION' + str(pos_jugador2))
+            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION ' + str(pos_jugador2))
 
         if pos_jugador1 > 32:
             marcarGanador(idjuego, 1)
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + 'HA GANADO PARTIDA')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' HA GANADO PARTIDA')
         elif pos_jugador2 > 32:
             marcarGanador(idjuego, 2)
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + 'HA GANADO PARTIDA')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' HA GANADO PARTIDA')
         return  Response("{'respuesta': 'Juego Simulado con Exito'}", status=201,  mimetype='application/json')
     except Exception as e:
         print(e, flush=True)
