@@ -99,6 +99,8 @@ def juegos() -> List[Dict]:
 
 
 def simularPartida(idJuego, jugadores):
+
+    url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
     return 1
 
 #se insertar un nuevo registro en la tabla juego
@@ -322,7 +324,7 @@ def obtenerGanador(idjuego):
     data['marcador'] = marcador
     json_data_list.append(data)
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
-    r1 = requests.put(url = urls, data=json.dumps(json_data_list)) 
+    r1 = requests.put(url = urls, data=json_data_list) 
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
