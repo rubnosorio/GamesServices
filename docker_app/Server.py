@@ -120,6 +120,7 @@ def tirarDado():
             operacion = dado1 + dado2
         else:
             operacion = abs(dado1 - dado2)
+        guardarBitacoraPartida('DADO', 'VALOR DADO ' + str(operacion))
         return operacion
     except Exception as e:
         print(e, flush=True)
@@ -136,13 +137,13 @@ def simularPartida(idjuego, jugadores):
             #turno jugador1
             dado = tirarDado()
             pos_jugador1 += dado
-           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
-           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION ' + str(pos_jugador1))
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION ' + str(pos_jugador1))
             #turno jugador2
             dado = tirarDado ()
             pos_jugador2 += dado
-            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
-            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION ' + str(pos_jugador2))
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION ' + str(pos_jugador2))
 
         if pos_jugador1 > 32:
             marcarGanador(idjuego, 1)
@@ -224,6 +225,7 @@ def generarNuevaPartida(idjuego, jugadores):
         # se cierra tambien con la conexion hacia la BD
         connection.close()
         # retorno del objeto con el contenido de la tabla
+        
         return Response(success_message, status=201,  mimetype='application/json')
     except Exception as e:
         print(e)
@@ -363,12 +365,13 @@ def cambiarTurno(idjuego, idjugador):
 
 # Funcion que permite iniciar un nuevo juego creado desde un torneo
 @app.route('/generar', methods=['POST'])
-#@check_for_token
+@check_for_token
 def generar():
     inputs = request.get_json(force=True)
     idjuego = inputs['id']
     jugadores = inputs['jugadores']
     valor = generarNuevaPartida(idjuego, jugadores)
+    guardarBitacoraPartida('GENERAR', 'SE GENERO UNA NUEVA PARTIDA')
     return valor
 
 @app.route('/finalizarPartida/<idjuego>', methods=['POST'])
