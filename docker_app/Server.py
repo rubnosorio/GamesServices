@@ -107,8 +107,9 @@ def tirarDado():
     solicitud = obtenerTokenDados()
     token  = solicitud["token"]
     header = {'Authorization': 'Bearer ' + token}
-    numeroDado  = requests.get(os.getenv("DADO_ENDPOINT"), headers=head)   
-    return json.dumps(numeroDado)
+    numeroDado  = requests.get(os.getenv("DADO_ENDPOINT"), headers=header)   
+    print(numeroDado.text)
+    return json.dumps(numeroDado.text)
 
 
 
