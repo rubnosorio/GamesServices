@@ -318,6 +318,7 @@ def obtenerEnv():
 
 
 
+
 if __name__ == '__main__':
     # comando para configurar la ip del servicio
     app.run(host='0.0.0.0')
