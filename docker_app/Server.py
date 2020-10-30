@@ -70,7 +70,7 @@ def check_for_token(func):
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
-            data = jwt.decode(TokenArray[1], key, algorithms='RS256')
+            data = jwt.decode(TokenArray[1], 'secret', algorithms='RS256')
         except Exception as e:
             print(e, flush=True)
             return jsonify({'Mensaje':'Token Invalido'}), 403
