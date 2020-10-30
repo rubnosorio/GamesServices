@@ -313,8 +313,8 @@ def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
 
-@app.route('/ganador/<idjuego>/<cadena>', methods=['POST'])
-def obtenerGanador(idjuego, cadena):
+@app.route('/ganador/<idjuego>', methods=['POST'])
+def obtenerGanador(idjuego):
     inputs = request.get_json(force=true)
     marcador = inputs['marcador']
     data = {}
