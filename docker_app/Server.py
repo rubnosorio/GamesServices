@@ -99,7 +99,7 @@ def juegos() -> List[Dict]:
 
 
 def obtenerTokenDados():
-    parametro = {'id': os.getenv("DADO_ENDPOINT"), 'secret' : os.getenv('LLAVE_TOKENDADO')}
+    parametro = {'id': os.getenv("ID_TOKENDADO"), 'secret' : os.getenv('LLAVE_TOKENDADO')}
     token  = requests.get(os.getenv("JWT_ENDPOINT"), params=parametro)
     return json.dumps(token.text)
 
