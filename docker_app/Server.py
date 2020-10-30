@@ -326,9 +326,9 @@ def obtenerEnv():
 @app.route('/ganador/<idjuego>/<cadena>', methods=['POST'])
 def obtenerGanador(idjuego, cadena):
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
-    r1 = requests.put(url = urls, data=cadena) 
+    
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    x = requests.put(urls, data=json.dumps(cadena), headers=headers)
+    r1 = requests.put(urls, data=json.dumps(cadena), headers=headers)
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
