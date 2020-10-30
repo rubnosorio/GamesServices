@@ -40,7 +40,7 @@ scope = ""
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        token = request.args.get('token')
+        token = request.headers.get('token')
         print(token, flush=True)
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
