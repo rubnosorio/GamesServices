@@ -98,9 +98,17 @@ def juegos() -> List[Dict]:
     return json.dumps(json_data_list)
 
 
-def simularPartida(idJuego, jugadores):
-
+def simularPartida(idjuego, jugadores):
+    connection = mysql.connector.connect(**config)
+    cursor = connection.cursor()
+    pos_jugador1 = 0
+    pos_jugador2 = 0
     url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
+    while pos_jugador1 < 32 and pos_jugador2 < 32:
+        r = requests.get(url)
+
+
+    
     return 1
 
 #se insertar un nuevo registro en la tabla juego
@@ -319,6 +327,8 @@ def obtenerEnv():
 def obtenerGanador(idjuego, cadena):
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
     r1 = requests.put(url = urls, data=cadena) 
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    x = requests.put(urls, data=json.dumps(cadena), headers=headers)
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
