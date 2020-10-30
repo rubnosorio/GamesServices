@@ -145,6 +145,7 @@ def simularPartida(idjuego, jugadores):
             pos_jugador2 += dado
             guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
             guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION' + str(pos_jugador2))
+
         if pos_jugador1 > 32:
             marcarGanador(idjuego, 1)
             guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + 'HA GANADO PARTIDA')
@@ -165,6 +166,7 @@ def guardarBitacoraPartida(nombremicro, accion):
                 VALUES (%(nombre)s, %(accion)s, %(created)s)"""
     # ejecucion de consulta hacia la base de datos  
     cursor.execute(sql_query, {'nombre': nombremicro,  'accion': accion, 'created':  today})
+    connection.commit()
     cursor.close()
     # se cierra tambien con la conexion hacia la BD
     connection.close()
