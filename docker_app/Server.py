@@ -107,9 +107,19 @@ def tirarDado():
     solicitud = obtenerTokenDados()
     token  = solicitud["token"]
     header = {'Authorization': 'Bearer ' + token}
-    numeroDado  = requests.get(os.getenv("DADO_ENDPOINT"), headers=header)   
-    print(numeroDado.text)
-    return json.dumps(numeroDado.text)
+    res  = requests.get(os.getenv("DADO_ENDPOINT"), headers=header)
+    dados = json.loads(res.text)["dados"]
+    dado1 = dados[0]
+    dado2 = dados[1]
+    #operacion entre los dados anteriores
+    dado3 = dados[3]   
+    operacion = 0
+    if (dado3 % 2) == 0:
+        operacion = dado1 + dado2
+    else:
+        operacion = abs(dado1 - dado2)
+    
+    return operacion
 
 
 
@@ -331,7 +341,7 @@ def simular():
     #idjuego = inputs['id']
     #jugadores = inputs['jugadores']
     #valor = simularPartida(idjuego, jugadores)
-    return tirarDado()
+    return str(tirarDado())
 
 @app.route('/obtenerJuegos', methods=['GET'])
 def obtenerJuegos():
