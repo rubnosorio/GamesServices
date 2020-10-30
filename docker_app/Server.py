@@ -328,7 +328,7 @@ def obtenerGanador(idjuego, cadena):
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
     
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r1 = requests.put(urls, data=json.dumps(cadena), headers=headers)
+    r1 = requests.put(urls, data=json.dumps({'marcador': [1]}), headers=headers)
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
