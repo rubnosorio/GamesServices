@@ -318,9 +318,9 @@ def finalizarPartida(idjuego):
 @app.route('/simular', methods=['POST'])
 #@check_for_token
 def simular():
-    inputs = request.get_json(force=True)
-    idjuego = inputs['id']
-    jugadores = inputs['jugadores']
+    #inputs = request.get_json(force=True)
+    #idjuego = inputs['id']
+    #jugadores = inputs['jugadores']
     #valor = simularPartida(idjuego, jugadores)
     return obtenerTokenDados()
 
