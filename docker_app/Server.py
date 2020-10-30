@@ -128,21 +128,46 @@ def tirarDado():
 
 
 def simularPartida(idjuego, jugadores):
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        pos_jugador1 = 0
+        pos_jugador2 = 0    
+        generarNuevaPartida(idjuego, jugadores)
+        while pos_jugador1 < 32 and pos_jugador2 < 32:
+            #turno jugador1
+            dado = tirarDado()
+            pos_jugador1 += dado
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION' + str(pos_jugador1))
+            #turno jugador2
+            dado = tirarDado ()
+            pos_jugador2 += dado
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION' + str(pos_jugador2))
+        if pos_jugador1 > 32:
+            marcarGanador(idjuego, 1)
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + 'HA GANADO PARTIDA')
+        elif pos_jugador2 > 32:
+            marcarGanador(idjuego, 2)
+            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + 'HA GANADO PARTIDA')
+        return  Response("{'respuesta': 'Juego Simulado con Exito'}", status=201,  mimetype='application/json')
+    except Exception as e:
+        print(e, flush=True)
+        return  Response(error_message, status=500,  mimetype='application/json')
+
+def guardarBitacoraPartida(nombremicro, accion):
     connection = mysql.connector.connect(**config)
     cursor = connection.cursor()
-    pos_jugador1 = 0
-    pos_jugador2 = 0
-    
-    generarNuevaPartida(idjuego, jugadores)
-    tokenr = requests.get()
-    while pos_jugador1 < 32 and pos_jugador2 < 32:
-        #turno jugador1
-
-        r = requests.get(url)
-
-
-    
-    return 1
+    today = date.today()
+    #query insert hacia juego
+    sql_query = """INSERT INTO bitacora_juego (nombre_microservicio, accion, created_at)
+                VALUES (%(nombre)s, %(accion)s, %(created)s)"""
+    # ejecucion de consulta hacia la base de datos  
+    cursor.execute(sql_query, {'nombre': nombremicro,  'accion': accion, 'created':  today})
+    cursor.close()
+    # se cierra tambien con la conexion hacia la BD
+    connection.close()
 
 #se insertar un nuevo registro en la tabla juego
 #se inicializan las posiciones y el marcador de los jugadores.
@@ -293,8 +318,21 @@ def cambiarTurnoJugador(idjuego, jugador):
         print(e)
         return Response("{'respuesta':'Error'}", status=500, mimetype='application/json')
 
+def marcarGanador(idjuego, valor):
+    urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
+    data = {'marcador': [valor]} 
 
-    # se guarda la transaccion
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r1 = requests.put(urls, data=json.dumps(data), headers=headers)
+
+    if r1.status_code == 201:
+        return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
+    else:
+        print(r1.status_code)
+        return Response("{'respuesta': 'Error'}", status=r1.status_code, mimetype='application/json')
+
+
+# se guarda la transaccion
 # funcion raiz obtener la posicion de los jugadores dentro de un 
 # determinado juego
 @app.route('/obtenerPosicion/<idjuego>', methods=['GET'])
@@ -341,11 +379,12 @@ def finalizarPartida(idjuego):
 @app.route('/simular', methods=['POST'])
 #@check_for_token
 def simular():
-    #inputs = request.get_json(force=True)
-    #idjuego = inputs['id']
-    #jugadores = inputs['jugadores']
-    #valor = simularPartida(idjuego, jugadores)
-    return str(tirarDado())
+    inputs = request.get_json(force=True)
+    idjuego = inputs['id']
+    jugadores = inputs['jugadores']
+    return simularPartida(idjuego, jugadores)
+
+
 
 @app.route('/obtenerJuegos', methods=['GET'])
 def obtenerJuegos():
@@ -358,17 +397,7 @@ def obtenerEnv():
 
 @app.route('/ganador/<idjuego>/<valor>', methods=['POST'])
 def obtenerGanador(idjuego, valor):
-    urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
-    data = {'marcador': [valor]} 
-
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r1 = requests.put(urls, data=json.dumps(data), headers=headers)
-
-    if r1.status_code == 201:
-        return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
-    else:
-        print(r1.status_code)
-        return Response("{'respuesta': 'Error'}", status=r1.status_code, mimetype='application/json')
+   return marcarGanador(idjuego, valor)
 
 
 
