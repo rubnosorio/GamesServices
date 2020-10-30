@@ -328,7 +328,7 @@ def obtenerGanador(idjuego):
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
     else:
         print(r1.status_code)
-        return Response("{'respuesta': 'Error'}", status=500, mimetype='application/json')
+        return Response("{'respuesta': 'Error'}", status=r1.status_code, mimetype='application/json')
 
 
 
