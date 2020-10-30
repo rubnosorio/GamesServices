@@ -54,7 +54,7 @@ def juegos() -> List[Dict]:
     cursor = connection.cursor()
     # ejecucion de consulta hacia la base de datos
     cursor.execute('''SELECT j.juego, j.estado, j.created_at, p.jugador FROM juego j
-                    INNER JOIN posicion p
+                     INNER JOIN posicion p
                         ON p.juego = j.juego''')
     # creacion de objeto donde se almacenara el contenido de la tabla
     results =  cursor.fetchall()
@@ -182,22 +182,19 @@ def obtenerPosicionJugadores(idjuego):
     json_data = json.dumps(json_data_list)
     return json_data
 
-def obtenerTurnoJuego(idjuego):
+def obtenerTurnoJuego(idjuego, idjugador):
     try:
         connection = mysql.connector.connect(**config)
         cursor = connection.cursor()
         #consulta hacia que se utilizara en base de datos
-        sql_query = "SELECT jugador, turno FROM turno WHERE juego = %(juego)s"
+        sql_query = "SELECT turno FROM turno WHERE juego = %(juego)s  AND jugador = %(jugador)s"
         # ejecucion de consulta hacia la base de datos  
-        cursor.execute(sql_query, {'juego': idjuego})
+        cursor.execute(sql_query, {'juego': idjuego, 'jugador': idjugar})
         results =  cursor.fetchall()    
-        json_data_list = []
+        data = {}
         for row in results:
-            data = {}
-            data['jugador'] = str(row[0])
-            data['turno'] = str(row[1])
-            json_data_list.append(data)
-        json_data = json.dumps(json_data_list)
+            data['turno'] = str(row[0])
+        json_data = json.dumps(data)
         # se cierra el cursor
         cursor.close()
         # se cierra tambien con la conexion hacia la BD
@@ -248,10 +245,10 @@ def guardarPosicion(idjuego, idjugador, posicion):
 
 # funcion que permite obtener el turno de un jugador en
 # determinado juego
-@app.route('/obtenerTurno/<idjuego>', methods=['GET'])
-def obtenerTurno(idjuego):
+@app.route('/obtenerTurno/<idjuego>/<idjugador>', methods=['GET'])
+def obtenerTurno(idjuego, idjugador):
     #variable de la conexion con la base de datos
-    return obtenerTurnoJuego(idjuego)
+    return obtenerTurnoJuego(idjuego, idjugador)
     
     
 
