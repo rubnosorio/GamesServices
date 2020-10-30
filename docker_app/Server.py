@@ -60,7 +60,7 @@ def updateFinalizarPartida(idjuego):
         #consulta hacia que se utilizara en base de datos
         sql_query = """UPDATE juego SET estado = 2 WHERE  juego = %(juego)s"""
         # ejecucion de consulta hacia la base de datos  
-        cursor.execute(sql_query, {juego': idjuego})
+        cursor.execute(sql_query, {'juego': idjuego})
         # creacion de objeto donde se almacenara el contenido de la tabla
         connection.commit()
         cursor.close()
