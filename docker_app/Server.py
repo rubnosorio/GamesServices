@@ -98,13 +98,23 @@ def juegos() -> List[Dict]:
     return json.dumps(json_data_list)
 
 
+def obtenerTokenDados():
+    parametro = {'id': os.getenv("DADO_ENDPOINT"), 'secret' : os.getenv('LLAVE_TOKENDADO')}
+    token  = requests.get(os.getenv("JWT_ENDPOINT"), params=parametro)
+    return json.dumps(token.text)
+
+
 def simularPartida(idjuego, jugadores):
     connection = mysql.connector.connect(**config)
     cursor = connection.cursor()
     pos_jugador1 = 0
     pos_jugador2 = 0
-    url = os.getenv("USERS_ENDPOINT") + str(jugadores[0])
+    url = os.getenv("DADO_ENDPOINT")   
+    generarNuevaPartida(idjuego, jugadores)
+    tokenr = requests.get()
     while pos_jugador1 < 32 and pos_jugador2 < 32:
+        #turno jugador1
+
         r = requests.get(url)
 
 
@@ -311,8 +321,8 @@ def simular():
     inputs = request.get_json(force=True)
     idjuego = inputs['id']
     jugadores = inputs['jugadores']
-    valor = simularPartida(idjuego, jugadores)
-    return "1"
+    #valor = simularPartida(idjuego, jugadores)
+    return obtenerTokenDados()
 
 @app.route('/obtenerJuegos', methods=['GET'])
 def obtenerJuegos():
@@ -341,13 +351,6 @@ def obtenerGanador(idjuego, valor):
 
     #verificar jugador2   
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
     # comando para configurar la ip del servicio
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
