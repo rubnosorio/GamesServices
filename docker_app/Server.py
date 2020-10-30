@@ -321,6 +321,7 @@ def obtenerGanador(idjuego, cadena):
         Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
     else:
         Response("{'respuesta': 'Error'}", status=500, mimetype='application/json')
+        
     #verificar jugador2   
 
 
