@@ -292,7 +292,6 @@ def generar():
 
 @app.route('/finalizarPartida/<idjuego>', methods=['POST'])
 def finalizarPartida(idjuego):
-
     return updateFinalizarPartida(idjuego)
     
 
@@ -313,7 +312,7 @@ def obtenerJuegos():
 def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
-    
+
 
 
 
