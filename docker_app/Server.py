@@ -322,6 +322,7 @@ def obtenerGanador(idjuego, cadena):
     else:
         return Response("{'respuesta': 'Error'}", status=500, mimetype='application/json')
 
+
     #verificar jugador2   
 
 
