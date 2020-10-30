@@ -35,7 +35,31 @@ config = {
     'database': 'juegos'
 }
 
-scope = ""
+key = ''' MIIEogIBAAKCAQEAwgd6kx9ucU3RiDFuuSxaWYdbxefu2iDzf2OaYymBg+XmkzXp
+v0jQ3g8erUOrPvKG0O8tIqfcyYDbDq7EVWdesRwYkIZcLTvrV0IUdANRkK0voUd9
+Y4CgUKp7CyeoaRml9VXqljNOQC5x4QtcYCj1cdm4mu+i/2ukBckVtzYuHR/Lcfci
+J6nCf9ARYc7yykJ3jslLmRbH8iBLZ8QN8uj1wsddD/ICYu5cHYdsh0faIyxK1WK/
+mOeM2pRfXJ/Ch3MfdSV6Ehh5QXnzYk+ObQYoV1l5scoF8ue5fBTjqqIUdScLkpJi
+iL82c3K72oQP+dWKGLDW9DNu3RgVslM8SI/jkQIDAQABAoIBADEBAow13AbxyIHF
+Olm6QfdqoFsTgNfGirkZxtxUl0lgvyNe8nJFSbtLxkusU4vKZRJP1e5yxuh9itXi
+feOz/85rcijORmmGQKIBJnlGfUs08lqhW6HN0q+M3xaqJXal66xSzrSwsIq1MD3O
+SL5gmdzvSBiZfWlVHk/3wWxMWskv1Qb9P0ELX9WjiWGVNqltqFJP3hBAoR3y8qZi
+Bd6KPvh+qr6jvnooae9Jv4rk3Vnrs9DAYAWjF0qCucNgr4yBkXJJe5ju0hc/De6B
+u6fE6hEHcjO3PzDkl3suIjeu6RT2dv3C64YGGqZFYddeu2t2jziu6vza9u0I3iJ4
+NUF8PaECgYEA/X5CTMr/bIs/er6QfUduBH8Slt7U0NGaw8q69NHpoXbDdEglryfS
+X0usAuD0NxgT15WdZEH2JaYtHSUHkI6x/E5Eb0xa+8ULotnh4JaccCSafdE49fEC
+QvszgB1tFOAxb6gnhOFlxGgpcpd1QTVpgiLKRTHNgEhJAMiIQvNuvWcCgYEAw/Ku
+bTToMBPwvicKHe4pbP+/2zTFmB+XtX9EjBEIxXf59fAIwCWY5JKyecll8gCvj6Nu
++vvUIFgBu6B7ErYLx2hJoLKGQl9WG12/D4/gmM1jAGgHrQUtt1eXUGgxpVJmJLJ2
+GwKDoJ+EDooxx83rL3FKHcPKd41DthVfNVDmREcCgYBFHMNexInXQi/Qe1xRi8QH
+Hc4nrCFBvaQAdal7Ti/wgbzQW0tK8gR9TthbAJIU40+lm3kJ+KHvqdrq80mYtA76
+xywJXDwCILsHb3gSD34fZRtp6j0pcMg5Etv7tgojgux3kNUVeY6RegSy5XBmkvVt
+MacMLoPk0dB1kjb0agJrSQKBgCran3U41fL12Xfs19SV6q9w+4e4ceKEPkyuadJs
+Q0vUonE8Lt2/G0IaJzhlaItVxQ+YAcSYYNs2BCMBxQjhkY/p6fhgMua/LPjNNuTz
+ZX5lpNpI5izb7hSj7m7iasEqVTZ/ZT8g/KKbYGlBpgN5sI7uqvP5hwVAeueOowTp
+DYMvAoGAch+V/pBG+VoUySjN0AN8ClmOPwl1hsQfXO8dLY+2mspYGeeYAxaYP9zS
+624HMdOADwHZAa/b9qHml2UpSm6ODvtDiNxK8IVXRlyKxr2lzra8zfbznnwmOyaX
+Z09f5rjIohkKyXfQv9R/Z9PTbk8ZNNzIjiWMKFbYLa+/D6Cr7dI='''
 
 def check_for_token(func):
     @wraps(func)
@@ -45,8 +69,7 @@ def check_for_token(func):
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
-            f = open("id_rsa.txt", "r")
-            data = jwt.decode(token, str(f.read()), algorithms='RS256')
+            data = jwt.decode(token, key, algorithms='RS256')
         except Exception as e:
             print(e, flush=True)
             return jsonify({'Mensaje':'Token Invalido'}), 403
