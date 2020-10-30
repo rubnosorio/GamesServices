@@ -2,7 +2,8 @@ import os
 #se cargan variables globales
 from dotenv import load_dotenv
 load_dotenv()
-
+#jwt
+import jwt
 #token
 from functools import wraps
 # import para hacer solicitudes
@@ -34,6 +35,8 @@ config = {
     'database': 'juegos'
 }
 
+scope = ""
+
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
@@ -41,12 +44,33 @@ def check_for_token(func):
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
-            data = jwt.decode(token, os.getenv("SECRET_KEY"))
+            f = open("id_rsa", "r")
+            data = jwt.decode(token, str(f.read()), algorithms='RS256')
         except:
             return jsonify({'Mensaje':'Token Invalido'}), 403
         return func(*args, **kwargs)
     return wrapped
     
+def updateFinalizarPartida(idjuego):
+    try:
+        today = date.today()
+        # variable de la conexion con la base de datos
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        #consulta hacia que se utilizara en base de datos
+        sql_query = """UPDATE juego SET estado = 2 WHERE  juego = %(juego)s"""
+        # ejecucion de consulta hacia la base de datos  
+        cursor.execute(sql_query, {juego': idjuego})
+        # creacion de objeto donde se almacenara el contenido de la tabla
+        connection.commit()
+        cursor.close()
+        # se cierra tambien con la conexion hacia la BD
+        connection.close()
+        return Response(success_message, status=201, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(error_message, status=500,  mimetype='application/json')
+
 
 def juegos() -> List[Dict]:
     # variable de la conexion con la base de datos
@@ -266,6 +290,11 @@ def generar():
     valor = generarNuevaPartida(idjuego, jugadores)
     return valor
 
+@app.route('/finalizarPartida/<idjuego>', methods=['POST'])
+def finalizarPartida(idjuego):
+    return updateFinalizarPartida(idjuego)
+    
+
 @app.route('/simular', methods=['POST'])
 #@check_for_token
 def simular():
@@ -283,6 +312,9 @@ def obtenerJuegos():
 def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
+
+
+
 
 
 if __name__ == '__main__':
