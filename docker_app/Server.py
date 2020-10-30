@@ -323,12 +323,13 @@ def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
 
-@app.route('/ganador/<idjuego>/<cadena>', methods=['POST'])
-def obtenerGanador(idjuego, cadena):
+@app.route('/ganador/<idjuego>/<valor>', methods=['POST'])
+def obtenerGanador(idjuego, valor):
     urls = os.getenv("TORNEOS_ENDPOINT") + str(idjuego)
-    
+    data = "{'marcador': [%s]}" % valor
+
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r1 = requests.put(urls, data=json.dumps({'marcador': [1]}), headers=headers)
+    r1 = requests.put(urls, data=json.dumps(data), headers=headers)
 
     if r1.status_code == 201:
         return Response("{'respuesta': 'Marcador guardado en torneos'}", status=201, mimetype='application/json')
