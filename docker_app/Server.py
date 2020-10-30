@@ -292,6 +292,7 @@ def generar():
 
 @app.route('/finalizarPartida/<idjuego>', methods=['POST'])
 def finalizarPartida(idjuego):
+    
     return updateFinalizarPartida(idjuego)
     
 
