@@ -104,22 +104,26 @@ def obtenerTokenDados():
     return json.loads(token.text)
 
 def tirarDado():
-    solicitud = obtenerTokenDados()
-    token  = solicitud["token"]
-    header = {'Authorization': 'Bearer ' + token}
-    res  = requests.get(os.getenv("DADO_ENDPOINT"), headers=header)
-    dados = json.loads(res.text)["dados"]
-    dado1 = dados[0]
-    dado2 = dados[1]
-    #operacion entre los dados anteriores
-    dado3 = dados[3]   
-    operacion = 0
-    if (dado3 % 2) == 0:
-        operacion = dado1 + dado2
-    else:
-        operacion = abs(dado1 - dado2)
-    
-    return operacion
+    try:
+        solicitud = obtenerTokenDados()
+        token  = solicitud["token"]
+        header = {'Authorization': 'Bearer ' + token}
+        res  = requests.get(os.getenv("DADO_ENDPOINT"), headers=header)
+        dadosJson = json.loads(res.text)
+        dados = dadosJson["dados"]
+        dado1 = dados[0]
+        dado2 = dados[1]
+        #operacion entre los dados anteriores
+        dado3 = dados[3]   
+        operacion = 0
+        if (dado3 % 2) == 0:
+            operacion = dado1 + dado2
+        else:
+            operacion = abs(dado1 - dado2)
+        return operacion
+    catch Exception as e:
+        print(e)
+        return 0
 
 
 
