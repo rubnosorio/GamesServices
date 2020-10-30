@@ -101,7 +101,15 @@ def juegos() -> List[Dict]:
 def obtenerTokenDados():
     parametro = {'id': os.getenv("ID_TOKENDADO"), 'secret' : os.getenv('LLAVE_TOKENDADO')}
     token  = requests.get(os.getenv("JWT_ENDPOINT"), params=parametro)
-    return json.dumps(token.text)
+    return json.loads(token.text)
+
+def tirarDado():
+    solicitud = obtenerTokenDados()
+    token  = solicitud["token"]
+    header = {'Authorization': 'Bearer ' + token}
+    numeroDado  = requests.get(os.getenv("DADO_ENDPOINT"), headers=head)   
+    return json.dumps(numeroDado)
+
 
 
 def simularPartida(idjuego, jugadores):
@@ -109,7 +117,7 @@ def simularPartida(idjuego, jugadores):
     cursor = connection.cursor()
     pos_jugador1 = 0
     pos_jugador2 = 0
-    url = os.getenv("DADO_ENDPOINT")   
+    
     generarNuevaPartida(idjuego, jugadores)
     tokenr = requests.get()
     while pos_jugador1 < 32 and pos_jugador2 < 32:
@@ -322,7 +330,7 @@ def simular():
     #idjuego = inputs['id']
     #jugadores = inputs['jugadores']
     #valor = simularPartida(idjuego, jugadores)
-    return obtenerTokenDados()
+    return tirarDado()
 
 @app.route('/obtenerJuegos', methods=['GET'])
 def obtenerJuegos():
