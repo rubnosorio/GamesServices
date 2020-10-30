@@ -138,13 +138,13 @@ def simularPartida(idjuego, jugadores):
             #turno jugador1
             dado = tirarDado()
             pos_jugador1 += dado
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION' + str(pos_jugador1))
+           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' TIRA DADO')
+           # guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[0] + ' NUEVA POSICION' + str(pos_jugador1))
             #turno jugador2
             dado = tirarDado ()
             pos_jugador2 += dado
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
-            guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION' + str(pos_jugador2))
+            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' TIRA DADO')
+            #guardarBitacoraPartida('SIMULAR', 'JUGADOR ' + jugadores[1] + ' NUEVA POSICION' + str(pos_jugador2))
 
         if pos_jugador1 > 32:
             marcarGanador(idjuego, 1)
