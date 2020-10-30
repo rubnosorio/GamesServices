@@ -312,6 +312,7 @@ def obtenerJuegos():
 def obtenerEnv():
     valor = os.getenv("SECRET_KEY")
     return valor 
+    
 
 
 
