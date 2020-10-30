@@ -35,7 +35,7 @@ config = {
     'database': 'juegos'
 }
 
-key = ''' MIIEogIBAAKCAQEAwgd6kx9ucU3RiDFuuSxaWYdbxefu2iDzf2OaYymBg+XmkzXp
+key = '''MIIEogIBAAKCAQEAwgd6kx9ucU3RiDFuuSxaWYdbxefu2iDzf2OaYymBg+XmkzXp
 v0jQ3g8erUOrPvKG0O8tIqfcyYDbDq7EVWdesRwYkIZcLTvrV0IUdANRkK0voUd9
 Y4CgUKp7CyeoaRml9VXqljNOQC5x4QtcYCj1cdm4mu+i/2ukBckVtzYuHR/Lcfci
 J6nCf9ARYc7yykJ3jslLmRbH8iBLZ8QN8uj1wsddD/ICYu5cHYdsh0faIyxK1WK/
