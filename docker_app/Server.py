@@ -114,7 +114,7 @@ def tirarDado():
         dado1 = dados[0]
         dado2 = dados[1]
         #operacion entre los dados anteriores
-        dado3 = dados[3]   
+        dado3 = dados[2]   
         operacion = 0
         if (dado3 % 2) == 0:
             operacion = dado1 + dado2
