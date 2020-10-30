@@ -189,7 +189,7 @@ def obtenerTurnoJuego(idjuego, idjugador):
         #consulta hacia que se utilizara en base de datos
         sql_query = "SELECT turno FROM turno WHERE juego = %(juego)s  AND jugador = %(jugador)s"
         # ejecucion de consulta hacia la base de datos  
-        cursor.execute(sql_query, {'juego': idjuego, 'jugador': idjugar})
+        cursor.execute(sql_query, {'juego': idjuego, 'jugador': idjugador})
         results =  cursor.fetchall()    
         data = {}
         for row in results:
