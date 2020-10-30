@@ -40,14 +40,15 @@ scope = ""
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        token = request.args['access_token']
+        token = request.args.get('token')
         print(token, flush=True)
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
             f = open("id_rsa", "r")
             data = jwt.decode(token, str(f.read()), algorithms='RS256')
-        except:
+        except Exception as e:
+            print(e, flush=True)
             return jsonify({'Mensaje':'Token Invalido'}), 403
         return func(*args, **kwargs)
     return wrapped
