@@ -45,7 +45,7 @@ def check_for_token(func):
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
-            f = open("key-public.pem")
+            f = open("key-public.pem", "r")
             public_key = f.read()
             data = jwt.decode(TokenArray[1], public_key, audience='2',algorithms='RS256')
         except Exception as e:
