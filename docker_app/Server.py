@@ -25,7 +25,7 @@ from datetime import date
 
 error_message = "{'respuesta':'Error'}"
 success_message = "{'respuesta': 'Success'}"
-app = Flask(__name__)  # creacion de la app en python de flask
+app = Flask(__name__, static_url_path='')  # creacion de la app en python de flask
 #configuracion global de base de datos
 config = {
     'user': 'root',
