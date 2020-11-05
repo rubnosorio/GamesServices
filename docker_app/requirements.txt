@@ -2,5 +2,6 @@ Flask
 mysql-connector
 python-dotenv
 pyjwt
+Flask-JWT
 requests
 uWSGI==2.0.17.1
