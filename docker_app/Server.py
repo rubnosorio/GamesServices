@@ -48,7 +48,7 @@ def check_for_token(func):
             f = open(data_file, "r")
             public_key = f.read()
             f.close()
-            data = jwt.decode(TokenArray[1], public_key, algorithms='RS256')
+            data = jwt.decode(TokenArray[1], public_key, algorithms='HS256')
         except Exception as e:
             print(e, flush=True)
             return jsonify({'Mensaje':'Token Invalido'}), 403
