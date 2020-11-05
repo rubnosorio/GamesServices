@@ -47,6 +47,7 @@ def check_for_token(func):
         try:
             f = open("key-public.pem", "r")
             public_key = f.read()
+            f.close()
             data = jwt.decode(TokenArray[1], public_key, audience='2',algorithms='RS256')
         except Exception as e:
             print(e, flush=True)
