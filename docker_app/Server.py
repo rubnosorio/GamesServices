@@ -34,8 +34,8 @@ config = {
     'port': '3306',
     'database': 'juegos'
 }
-
-
+basedir = os.path.abspath(os.path.dirname(__file__))
+data_file = os.path.join(basedir, 'key-public.pem')
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
@@ -45,7 +45,7 @@ def check_for_token(func):
         if not token:
             return jsonify({'Mensaje':'Falta el token'}), 403
         try:
-            f = open("key-public.pem", "r")
+            f = open(data_file, "r")
             public_key = f.read()
             f.close()
             data = jwt.decode(TokenArray[1], public_key, audience='2',algorithms='RS256')
