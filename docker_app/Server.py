@@ -383,7 +383,7 @@ def finalizarPartida(idjuego):
     
 
 @app.route('/simular', methods=['POST'])
-#@check_for_token
+@check_for_token
 def simular():
     inputs = request.get_json(force=True)
     idjuego = inputs['id']
